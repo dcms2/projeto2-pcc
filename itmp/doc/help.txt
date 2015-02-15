@@ -1,0 +1,26 @@
+
+Usage:
+./itmp index [OPTIONS] TEXTFILE [TEXTFILE...]
+  Creates an index for TEXTFILE with the same name but with file extension .idx
+
+Example: ./itmp index mody-dick.txt
+  This will create an index for mody-dick.txt with name moby-dic.idx
+
+Possible options:
+  -h, --help                display this help and exit
+
+Another usage:
+./itmp search [OPTIONS] PATTERN INDEXFILE
+  This will search for PATTERN in INDEXFILE 
+
+Example: ./itmp search --pattern=patterns.txt indexfile.idx
+  This will search for every pattern in patterns.txt across indexfile.idx
+
+Possible options:
+  -c, --count               print only a count of matching occurences of all patterns per INDEXFILE
+
+  -h, --help                display this help and exit
+
+  -p, --pattern=FILE        obtain PATTERNs from FILE
+      In this case, FILE can contain many patterns to be matched, one per line.
+
