@@ -2,8 +2,6 @@
 #define TRIE_H
 
 #include <vector>
-#include <bits/stdc++.h>
-using namespace std;
 
 class Trie {
  public:
@@ -17,8 +15,6 @@ class Trie {
   void init_trie();
   int add_or_contains(unsigned char c);
   int get_code_word();
-
-  void print(int node, string s);
 
  private:
   struct Node {
@@ -70,16 +66,6 @@ int Trie::get_code_word() {
 void Trie::init_node(int node) {
   trie[node].code_word = -1;
   memset(trie[node].adj, -1, sizeof trie[node].adj);
-}
-
-void Trie::print(int node, string s) {
-  if (s.size() > 1)
-    printf("%s = %d\n", s.c_str(), trie[node].code_word);
-  for (int i = 0; i < 256; ++i) {
-    if (trie[node].adj[i] != -1) {
-      print(trie[node].adj[i], s + char(i));
-    }
-  }
 }
 
 #endif
