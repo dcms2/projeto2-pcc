@@ -7,9 +7,6 @@
 
 using std::string;
 
-#include <bits/stdc++.h>
-using namespace std;
-
 namespace LZW {
   string compress_text(const string& text) {
     Trie dictionary = Trie();
@@ -44,13 +41,13 @@ namespace LZW {
     }
 
     int size = 256;
-    int code_word = (text[0] << 8) | text[1];
+    int code_word = (((unsigned char) text[0]) << 8) | ((unsigned char) text[1]);
 
     string prev = string(1, (unsigned char) code_word);
     string ret = prev;
 
     for (int i = 2; i < text.size(); i += 2) {
-      int code_word = (text[i] << 8) | text[i^1];
+      int code_word = (((unsigned char) text[i]) << 8) | ((unsigned char) text[i^1]);
       string aux;
       if (code_word < 256 || valid[code_word] == valid_step) {
         aux = dictionary[code_word];
