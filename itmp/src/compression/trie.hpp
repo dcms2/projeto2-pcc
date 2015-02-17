@@ -3,9 +3,13 @@
 
 #include <vector>
 
+#include <bits/stdc++.h>
+using namespace std;
+
 class Trie {
  public:
   static const int MAX_SIZE = 1 << 16;
+  static const int FLUSH = MAX_SIZE-1;
 
   Trie() {
     trie.assign(MAX_SIZE + 3, Node()); // +3 due to cache issues
@@ -13,7 +17,7 @@ class Trie {
   }
 
   void init_trie();
-  int add_or_contains(unsigned char c);
+  int add_or_contains(unsigned char c, bool& reseted);
   int get_code_word();
 
  private:
@@ -33,15 +37,17 @@ void Trie::init_trie() {
   node_at = 0;
   node_counter = 1;
   init_node(0);
+  bool trash;
   for (int i = 0; i < 256; ++i) {
-    add_or_contains(i);
+    add_or_contains(i,trash);
     node_at = 0;
   }
 }
 
-int Trie::add_or_contains(unsigned char c) {
+int Trie::add_or_contains(unsigned char c, bool& reseted) {
   if (trie[node_at].adj[c] != -1) {
     node_at = trie[node_at].adj[c];
+    reseted = false;
     return 0;
   } else {
     int code_word = trie[node_at].code_word;
@@ -52,8 +58,14 @@ int Trie::add_or_contains(unsigned char c) {
     
     node_at = trie[0].adj[c];
     ++node_counter;
-
-    if (node_counter == MAX_SIZE) init_trie();
+    
+    if (node_counter == MAX_SIZE) {
+      init_trie();
+      node_at = trie[0].adj[c];
+      reseted = true;
+    } else {
+      reseted = false;
+    }
     
     return code_word;
   }
