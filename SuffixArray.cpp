@@ -15,10 +15,64 @@ private:
     int* Llcp;
     int* Rlcp;
 
+    struct tripla {
+        int st, nd, idx;
+        tripla() {}
+        tripla(int st, int nd, int idx) : st(st), nd(nd), idx(idx) {}
+        bool operator < (const tripla &rhs) const {
+            if(st != rhs.st) return st < rhs.st;
+            if(nd != rhs.nd) return nd < rhs.nd;
+            return idx < rhs.idx;
+        }
+    };
+
+    int calcLog() {
+        int lg;
+        for(lg = 0; (1<<lg) < n; ++lg);
+        return lg;
+    }
+
+    void sort_index(int* p) {
+        pair<int,int>* v = new pair<int,int>[n];
+        for(int i = 0; i < n; ++i) 
+            v[i] = make_pair(T[i], i);
+        sort(v, v+n);
+        int ord = 0;
+        p[v[0].second] = ord;
+        for(int i = 1; i < n; ++i) {
+            if(v[i].first != v[i-1].first)
+                ord++;
+            p[v[i].second] = ord;
+        }
+        delete v;
+    }   
+
     void build_sa() {
         this->sa = new int[n];
-        for(int i = 0; i < n; ++i) sa[i] = i;
-        sort(sa, sa+n, cmp);
+        int* p = new int[n];
+        sort_index(p);
+        tripla* v = new tripla[n];
+        int lg = calcLog();
+        for(int k = 1; k <= lg; ++k) {
+            int j = (1<<(k-1));
+            for(int i = 0; i < n; ++i) {
+                if(i + j > n)
+                    v[i] = tripla(p[i],0,i);
+                else
+                    v[i] = tripla(p[i], p[i+j], i);
+            }
+            sort(v, v+n);
+            int ord = 0;
+            p[v[0].idx] = ord;
+            for(int i = 1; i < n; ++i) {
+                if(!(v[i].st == v[i-1].st && v[i].nd == v[i-1].nd))
+                    ord++;
+                p[v[i].idx] = ord;
+            }
+        }
+        for(int i = 0; i < n; ++i) sa[p[i]] = i;
+        delete p;
+        delete v;
     }
 
     int computeLCP(char* str1, char* str2) {
