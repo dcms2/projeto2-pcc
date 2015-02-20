@@ -2,15 +2,10 @@
 
 using namespace std;
 
-char A[1000];
-
-bool cmp(int a, int b) {
-    return strcmp(A+a, A+b) < 0;
-}
-
 class SuffixArray {
 private:
     int* sa;
+    int** p;
     char* T; int n;
     int* Llcp;
     int* Rlcp;
@@ -32,60 +27,78 @@ private:
         return lg;
     }
 
-    void sort_index(int* p) {
+    void sort_index(int* arr) {
         pair<int,int>* v = new pair<int,int>[n];
         for(int i = 0; i < n; ++i) 
             v[i] = make_pair(T[i], i);
         sort(v, v+n);
         int ord = 0;
-        p[v[0].second] = ord;
+        arr[v[0].second] = ord;
         for(int i = 1; i < n; ++i) {
             if(v[i].first != v[i-1].first)
                 ord++;
-            p[v[i].second] = ord;
+            arr[v[i].second] = ord;
         }
         delete v;
     }   
 
     void build_sa() {
         this->sa = new int[n];
-        int* p = new int[n];
-        sort_index(p);
         tripla* v = new tripla[n];
         int lg = calcLog();
+        this->p = new int*[lg+1];
+        for(int i = 0; i <= lg; ++i) this->p[i] = new int[n];
+        sort_index(this->p[0]);
         for(int k = 1; k <= lg; ++k) {
             int j = (1<<(k-1));
             for(int i = 0; i < n; ++i) {
                 if(i + j > n)
-                    v[i] = tripla(p[i],0,i);
+                    v[i] = tripla(p[k-1][i],0,i);
                 else
-                    v[i] = tripla(p[i], p[i+j], i);
+                    v[i] = tripla(p[k-1][i], p[k-1][i+j], i);
             }
             sort(v, v+n);
             int ord = 0;
-            p[v[0].idx] = ord;
+            p[k][v[0].idx] = ord;
             for(int i = 1; i < n; ++i) {
                 if(!(v[i].st == v[i-1].st && v[i].nd == v[i-1].nd))
                     ord++;
-                p[v[i].idx] = ord;
+                p[k][v[i].idx] = ord;
             }
         }
-        for(int i = 0; i < n; ++i) sa[p[i]] = i;
-        delete p;
+        for(int i = 0; i < n; ++i) sa[p[lg][i]] = i;
         delete v;
     }
 
     int computeLCP(char* str1, char* str2) {
         int i;
-        for(i = 0; str1[i] && str2[i] && str1[i] == str2[i]; ++i);
+        for(i = 0; str1[i] && str2[i] && (str1[i] == str2[i]); ++i);
         return i;
+    }
+
+    int precalcLCP(int i, int j) {
+        int lcp;
+        if(i == j)
+            lcp = n-i;
+        else {
+            int k = calcLog();
+            lcp = 0;
+            while(k >= 0 && i < n && j < n) {
+                if(p[k][i] == p[k][j]) {
+                    lcp += (1<<k);
+                    i += (1<<k); j += (1<<k);
+                }
+                k--;
+            }
+        }
+        return lcp;
     }
 
     void build_lcp(int b, int e) {
         if(e-b <= 1) return;
         int mid = (b+e)/2;
-        Llcp[mid] = computeLCP(T+sa[b], T+sa[mid]);
-        Rlcp[mid] = computeLCP(T+sa[e], T+sa[mid]);
+        Llcp[mid] = precalcLCP(sa[b], sa[mid]);
+        Rlcp[mid] = precalcLCP(sa[e], sa[mid]);
         build_lcp(b, mid);
         build_lcp(mid, e);
     }
@@ -171,7 +184,6 @@ public:
         this->T = new char[n];
         strcpy(this->T, T);
         this->n = n;
-        strcpy(A, this->T);
         build_sa();
         this->Llcp = new int[n];
         this->Rlcp = new int[n];
@@ -187,7 +199,7 @@ public:
 };
 
 int main(){
-    char T[100010], W[100100];
+    char T[1000010], W[100100];
     scanf("%s", T);
     SuffixArray sa = SuffixArray(T,  strlen(T));
     int q; scanf("%d", &q);
