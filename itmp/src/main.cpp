@@ -1,6 +1,8 @@
 #include <bits/stdc++.h>
 #include <getopt.h>
 #include <glob.h>
+#include "matching/suffix_array.hpp"
+#include "compression/LZW.hpp"
 
 using std::string;
 
