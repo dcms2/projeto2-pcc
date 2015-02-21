@@ -2,6 +2,11 @@
 
 using namespace std;
 
+/* This is a n * logn implementation strongly based on the original
+article by Manber & Mayers. Unfortunately, I wasn't able to perfectly
+understand how they implemented the Llcp and Rlcp arrays using only O(n) memory,
+but I came out with a way to do it using O(nlogn) memory*/
+
 class SuffixArray {
 private:
     int* pos;
@@ -28,6 +33,14 @@ private:
         delete v;
     }
 
+    /* This is mainly a replication of the article. 
+    I used bucket sort to generate de suffix array. At the first step,
+    buckets contain suffixes that have the same first letter. At step 
+    H, suffixes in the same bucket cointain the same first H letters.
+    The modification I did was the following: create an array of memory
+    O(nlogn) to store, at each step, in which bucket the suffixes were.
+    This information will be used later to compute the LCP between different
+    suffixes in O(logn) time.*/
 
     void buildSA() {
         this->pos = new int[n];
@@ -106,6 +119,10 @@ private:
         delete next;
     }
 
+    /*We know, by definition, that if two suffixes are in the same bucket
+    at the H-th step, then their first H letters are the same. We then use
+    this information to calculate the LCP between then in a greedy way.*/
+
     int precalcLCP(int i, int j) {
         int lcp;
         if(i == j)
@@ -138,6 +155,10 @@ private:
         buildLCP(b, mid);
         buildLCP(mid, e);
     }
+
+    /*These are the binary searches O(p + logn) that uses information
+    stored in arrays Llcp and Rlcp to avoid recomparison of letters, 
+    like taugh in class*/
 
     int computeLW(char* W, int p) {
         int Lw;
@@ -235,17 +256,21 @@ public:
     int getVal(int i) { return pos[i]; }
 };
 
-char W[1000100], T[1000100];
-int out[1000100];
+char W[10010], T[100010];
 
 int main(){
-
-    scanf("%s", T);
-    SuffixArray sa = SuffixArray(T, strlen(T));
-    while(1) {
-        scanf("%s", W);
-        pair<int,int> ans = sa.findPattern(W, strlen(W));
-        printf("%d\n", ans.second-ans.first+1);
+    int k; scanf("%d", &k);
+    while(k--) {
+        scanf("%s", T);
+        SuffixArray sa = SuffixArray(T, strlen(T));
+        int q; scanf("%d", &q);
+        while(q--) {
+            scanf("%s", W);
+            //printf("%s %s\n", T, W);
+            pair<int,int> ans = sa.findPattern(W, strlen(W));
+            if(ans.second-ans.first >= 0) puts("y");
+            else puts("n");
+        }
     }
     return 0;
 }
