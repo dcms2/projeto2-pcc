@@ -197,17 +197,26 @@ public:
         return make_pair(Lw, Rw);
     }
 
+    int getVal(int i) { return sa[i]; }
+
 };
 
+char W[1000100], T[1000100];
+int out[1000100];
+
 int main(){
-    char T[1000010], W[100100];
-    scanf("%s", T);
-    SuffixArray sa = SuffixArray(T,  strlen(T));
-    int q; scanf("%d", &q);
-    while(q--) {
+    int n;
+    while(scanf("%d", &n) == 1) {
         scanf("%s", W);
+        scanf("%s", T);
+        SuffixArray sa = SuffixArray(T, strlen(T));
         pair<int,int> ans = sa.findPattern(W, strlen(W));
-        printf("%d\n", ans.second-ans.first+1);
+        int k = 0;
+        for(int i = ans.first; i <= ans.second; ++i) 
+            out[k++] = sa.getVal(i);
+        sort(out,out+k);
+        for(int i = 0; i < k; ++i) printf("%d\n", out[i]);
+        printf("\n");
     }
     return 0;
 }
