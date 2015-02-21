@@ -181,13 +181,14 @@ private:
 
 public:
     SuffixArray(char* T, int n) {
-        this->T = new char[n];
+        this->T = new char[n+1];
         strcpy(this->T, T);
-        this->n = n;
+        this->T[n] = '$';
+        this->n = n+1;
         build_sa();
-        this->Llcp = new int[n];
-        this->Rlcp = new int[n];
-        build_lcp(0, n-1);
+        this->Llcp = new int[this->n];
+        this->Rlcp = new int[this->n];
+        build_lcp(0, (this->n)-1);
     }
 
     pair<int,int> findPattern(char* W, int p) {
