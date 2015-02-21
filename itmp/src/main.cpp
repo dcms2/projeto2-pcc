@@ -14,6 +14,26 @@ inline void help() {
   }
 }
 
+inline void make_index(const std::vector<string>& filenames) {
+  for (int i = 0; i < filenames.size(); ++i) {
+    string new_name = std::move(filenames[i]);
+    while (new_name.back() != '.') new_name.pop_back();
+    new_name.push_back('i'); new_name.push_back('d'); new_name.push_back('x');
+    std::cerr << "making index of file " << filenames[i] << " with name " << new_name << std::endl;
+  }
+}
+
+inline void search(const std::vector<string>& indexes,
+                   const std::vector<string>& patterns,
+                   const bool only_occ) {
+
+  for (int i = 0; i < indexes.size(); ++i) {
+    for (int j = 0; j < patterns.size(); ++j) {
+      std::cerr << "searching for " << patterns[j] << " in " << indexes[i] << std::endl;
+    }
+  }
+}
+
 int main(int argc, char **argv) {
 
     static struct option long_options[] = {
@@ -60,15 +80,17 @@ int main(int argc, char **argv) {
       ++optind;
     }
 
-    std::cerr << "search_mode = " << search_mode << std::endl;
-
     std::vector<string> patterns;
 
     if (has_pattern_file) {
         std::ifstream file_reader(pattern_filename);
         string pattern;
-        while (std::getline(file_reader, pattern)) {
-            patterns.push_back(pattern);
+        if (!file_reader.is_open()) {
+          std::cerr << "We couldn't open file \"" << pattern_filename << "\", maybe it doesn't exist." << std::endl;
+        } else {
+          while (std::getline(file_reader, pattern)) {
+              patterns.push_back(pattern);
+          }
         }
     } else {
         if (optind == argc) {
@@ -103,37 +125,10 @@ int main(int argc, char **argv) {
     delete vector_ptr;
 
     if (search_mode) {
-      //@TODO
+      search(filenames, patterns, has_count);
     } else {
-      //@TODO
+      make_index(filenames);
     }
-
-    /*
-
-      //filenames in vector filenames
-      //pattern in vector patterns
-      //only number of occurrences iff has_count is 1
-
-      std::cerr << "Files:" << std::endl;
-
-      for (string file : fileNames) {
-        std::cerr << file << std::endl;
-      }
-
-      std::cerr << std::endl;
-
-      std::cerr << "Patterns:" << std::endl;
-
-      for (string pattern : patterns) {
-        std::cerr << pattern << std::endl;
-      }
-
-      std::cerr << std::endl;
-
-      if (has_count) std::cerr << "Only count" << std::endl;
-      else std::cerr << "All occurrences" << std::endl;
-
-    */
 
     return 0;
 }
