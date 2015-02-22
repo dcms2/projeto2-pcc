@@ -72,6 +72,8 @@ inline void read_index(const string& indexname,
   }
 }
 
+char buffer[1000005], buffer2[1000005];
+
 inline void search_number_occ(const std::vector<string>& indexes,
                               const std::vector<string>& patterns) {
 
@@ -80,23 +82,70 @@ inline void search_number_occ(const std::vector<string>& indexes,
     vector<int> pos, Llcp, Rlcp;
     read_index(indexes[i], text, pos, Llcp, Rlcp);
     SuffixArray suffix_array = SuffixArray(text, pos, Llcp, Rlcp);
-    std::cout << "File: " << indexes[i] << std::endl;
+    printf("Files: %s\n", indexes[i].c_str());
     for (int j = 0; j < patterns.size(); ++j) {
-      char* pattern = new char[patterns[j].size()+1];
+      char* pattern;
+      if (patterns[j].size()+1 >= 1000005) pattern = new char[patterns[j].size()+1];
+      else pattern = buffer;
       strcpy(pattern, patterns[j].c_str());
       pair<int,int> par = suffix_array.findPattern(pattern);
       int x = par.second - par.first + 1;
-      if (x != 1) std::cerr << "    found " << patterns[j] << " " << x << " times" << std::endl;
-      else std::cerr << "    found " << patterns[j] << " 1 time" << std::endl;
-      delete pattern;
+      if (x != 1) printf("   found %s %d times\n", pattern, x);
+      else printf("   found %s 1 time\n", pattern);
+      if (patterns[j].size()+1 >= 1000005) delete pattern;
     }
   }
+}
+
+inline void print_line(const string& text, int p, const vector<int>& acc_lines) {
+  int upb = upper_bound(acc_lines.begin(), acc_lines.end(), p) - acc_lines.begin();
+  int begin = acc_lines[upb-1] + 1;
+  int sz = 0;
+  for (int i = begin; i < acc_lines[upb]; ++i) {
+    buffer2[sz++] = text[i];
+    if (sz == 1000000) {
+      buffer2[sz] = 0;
+      printf("%s", buffer2);
+      sz = 0;
+    }
+  }
+  buffer2[sz] = 0;
+  printf("%s\n", buffer2);
 }
 
 inline void search_print_lines(const std::vector<string>& indexes,
                                const std::vector<string>& patterns) {
 
-  std::cerr << "@TODO" << std::endl;
+  for (int i = 0; i < indexes.size(); ++i) {
+    string text;
+    vector<int> pos, Llcp, Rlcp, acc_lines;
+    read_index(indexes[i], text, pos, Llcp, Rlcp);
+    
+    acc_lines.push_back(-1);
+    for (int j = 0; j < text.size(); ++j) {
+      if (text[j] == '\n') acc_lines.push_back(j);
+    }
+    acc_lines.push_back(text.size());
+
+    SuffixArray suffix_array = SuffixArray(text, pos, Llcp, Rlcp);
+    for (int j = 0; j < patterns.size(); ++j) {
+      char* pattern;
+      if (patterns[j].size()+1 >= 1000005) pattern = new char[patterns[j].size()+1];
+      else pattern = buffer;
+      strcpy(pattern, patterns[j].c_str());
+      pair<int,int> par = suffix_array.findPattern(pattern);
+      vector<int> positions;
+      for (int k = par.first; k <= par.second; ++k) {
+        positions.push_back(k);
+      }
+      sort(positions.begin(), positions.end());
+      for (int k = 0; k < positions.size(); ++k) {
+        printf("%s(%s):", indexes[i].c_str(), pattern);
+        print_line(text,positions[k],acc_lines);
+      }
+      if (patterns[j].size()+1 >= 1000005) delete pattern;
+    }
+  }
 }
 
 inline bool is_index_file(const string& s) {
@@ -184,7 +233,7 @@ int main(int argc, char **argv) {
     glob(argv[optind], GLOB_NOSORT|GLOB_MARK, NULL, vector_ptr);
 
     for (int i = 0; i < vector_ptr->gl_pathc; i++) {
-      if (!is_index_file(vector_ptr->gl_pathv[i])) {
+      if (!is_index_file(vector_ptr->gl_pathv[i]) && search_mode) {
         std::cerr << string(vector_ptr->gl_pathv[i]) << " doesn't have a .idx extension, it won't be used to search for patterns." << std::endl;
       } else {
         filenames.push_back(vector_ptr->gl_pathv[i]);
