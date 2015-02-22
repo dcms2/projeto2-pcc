@@ -80,16 +80,14 @@ inline void search(const std::vector<string>& indexes,
     string text;
     vector<int> pos, Llcp, Rlcp;
     read_index(indexes[i], text, pos, Llcp, Rlcp);
-    //SuffixArray suffix_array = SuffixArray(text, pos, Llcp, Rlcp);
-    std::cerr << "texto descomprimido: " << text << std::endl;
-    std::cerr << "pos:";
-    for (int j = 0; j < pos.size(); ++j) {
-      std::cerr << " " << pos[j];
+    SuffixArray suffix_array = SuffixArray(text, pos, Llcp, Rlcp);
+    for (int j = 0; j < patterns.size(); ++j) {
+      char* pattern = new char[patterns[j].size()+1];
+      strcpy(pattern, patterns[j].c_str());
+      pair<int,int> par = suffix_array.findPattern(pattern);
+      int x = par.second - par.first + 1;
+      std::cerr << "found " << patterns[j] << " in " << indexes[i] << " " << x << " times" << std::endl;
     }
-    std::cerr << std::endl;
-    /*for (int j = 0; j < patterns.size(); ++j) {
-      std::cerr << "searching for " << patterns[j] << " in " << indexes[i] << std::endl;
-    }*/
   }
 }
 
@@ -113,8 +111,6 @@ int main(int argc, char **argv) {
     } else if (op == 'p') {
       pattern_filename = optarg;
       has_pattern_file = 1;
-    } else {
-      fprintf(stderr, ">>> %d\n", op);
     }
   }
 
@@ -140,7 +136,7 @@ int main(int argc, char **argv) {
 
   std::vector<string> patterns;
 
-  if (has_pattern_file) {
+  if (has_pattern_file && search_mode) {
     std::ifstream file_reader(pattern_filename);
     string pattern;
     if (!file_reader.is_open()) {
