@@ -1,0 +1,738 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <link href="/bootstrap/css/bootstrap.css" rel="stylesheet">
+  <link href="https://plus.google.com/111891839130546418347/" rel="publisher" />
+  <link href="/google-code-prettify/prettify.css" rel="stylesheet">
+  <script src="/google-code-prettify/prettify.js"></script>
+
+  <script>
+    var user_info = {"logged_in":0};
+  </script>
+
+  
+    <link rel="alternate" hreflang="x-default" href="http://perlmaven.com/what-is-a-text-file" />
+    
+       <link rel="alternate" hreflang="en" href="http://perlmaven.com/what-is-a-text-file" />
+    
+       <link rel="alternate" hreflang="ko" href="http://ko.perlmaven.com/what-is-a-text-file" />
+    
+  
+
+  <link href="/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+  <link href="/atom" rel="alternate" type="application/atom+xml" title ="Perl Maven" />
+
+  <link href="//vjs.zencdn.net/4.11/video-js.css" rel="stylesheet">
+  <script src="//vjs.zencdn.net/4.11/video.js"></script>
+
+  <title>What is a text file and what is a binary file?</title>
+  <meta name="description" content="">
+  <meta name="author" content="szabgab">
+
+  <link href="/css/style.css?9" rel="stylesheet">
+  
+</head>
+<body>
+
+
+<!-- start facebook SDK ?? -->
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=101520636611790";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));
+</script>
+<!-- end facebook -->
+
+
+<div class="navbar navbar-fixed-top">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </a>
+
+      <a class="brand" href="/">Perl Maven</a>
+      <div class="nav-collapse">
+        
+          <ul class="nav    ">
+                            <li><a href="/perl-tutorial">Perl Tutorial</a></li>
+              
+
+              
+
+              
+
+              
+
+              
+                            <li><a href="/pro">Pro</a></li>
+              
+
+              
+
+              
+
+              
+
+              
+                            <li><a href="/articles">Articles</a></li>
+              
+
+              
+
+              
+
+              
+
+              
+            
+              
+
+              
+
+              
+                
+                  <li><a href="/pm/login">Login</a></li>
+                
+              
+
+              
+
+              
+            
+              
+
+                              
+                  <button class="btn btn-warning" type="button" id="free-button">FREE Registration</button>
+                
+
+              
+
+              
+
+              
+            
+          </ul>
+        
+          <ul class="nav  pull-right  ">
+                            <li><a href="/keywords">Type keyword:</a></li>
+              
+
+              
+
+              
+
+              
+
+              
+            
+              
+
+              
+
+              
+
+              
+                <li><input id="search_box" type="text" data-provide="typeahead" data-items="4" ></li>
+              
+
+              
+                            <li><a href="/archive">Archive</a></li>
+              
+
+              
+
+              
+
+              
+
+              
+                            <li><a href="/about">About</a></li>
+              
+
+              
+
+              
+
+              
+
+              
+            
+              
+
+              
+
+              
+
+              
+
+              
+                <li><a href="/atom" rel="alternate" type="application/atom+xml"><img src="/img/feed-icon16x16.png" id="atom-icon" alt="" /></a></li>
+              
+            
+          </ul>
+        
+      </div><!--/.nav-collapse -->
+    </div>
+  </div>
+</div>
+
+
+
+<!-- Modal start -->
+<div class="modal fade" id="popup_visitor">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true"></span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title">Perl Maven</h4>
+      </div>
+
+      <div class="modal-body">
+        <h2>Do you want to improve yourself?</h2>
+        <p>Register to the FREE Perl Maven newsletter here.</p>
+<!--
+            <div class="form-group">
+                <label for="register-name">Name</label>
+                <input name="name" class="form-control" id="register-name" type="text" placeholder="Enter your full name" />
+            </div>
+-->
+            <div class="form-group">
+                <label for="register-email">Email</label>
+                <input name="email" class="form-control" id="register-email" type="email" placeholder="Enter your email" />
+            </div>
+            <div class="form-group" id="div-password">
+                <label for="register-email">Password</label>
+                <input name="password" type="password" class="form-control" id="register-password" placeholder="Create a password" />
+            </div>
+            <button type="submit" id="register-button" class="btn btn-default">Register</button>
+            <div>
+         <small>If you are already registered, then please <a href="/pm/login">log in</a> and you won't see this pop-up any more.</small>
+            <div id="register-message"></div>
+            </div>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div class="modal fade" id="popup_logged_in">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true"></span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title">Perl Maven</h4>
+      </div>
+
+      <div class="modal-body">
+          <div id="just-register-message"></div>
+        <h2>Do you really want to improve yourself?</h2>
+          <p>The Perl Maven Pro is now available for only <b>$1</b> for the first month!</p>
+          <p><a class="btn btn-primary btn-lg" href="/pro" role="button">Learn more</a></p>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div class="modal fade" id="popup_thank_you">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true"></span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title">Perl Maven</h4>
+      </div>
+
+      <div class="modal-body">
+          <div>Thank you for registering!</div>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+<!-- used for the result set when there are more than one results -->
+<div id="popup_search_results" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+  </div>
+  <div class="modal-body" id="search_results">
+  </div>
+  <div class="modal-footer">
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+  </div>
+</div>
+<!-- Modal end -->
+
+
+
+
+<div class="container-fluid">
+  <div class="row-fluid">
+    <div class="span1">
+
+            
+         
+            <div class="category_img">
+               <a href="http://perlmaven.com/beginner-perl-maven-e-book"><img src="/img/beginner_perl_maven_150x212.png" alt="Beginner Perl Maven" /></a>
+            </div>
+         
+      
+
+
+      
+  
+  <div id="sites">
+    <ul>
+    
+       <li><a href="http://ko.perlmaven.com/what-is-a-text-file">한국어</a></li>
+    
+       <li><hr></li>
+       <li><a href="http://perlmaven.com/about#translations">about the translations</a></li>
+    </ul>
+  </div>
+  
+
+
+
+    </div>
+    <div class="span8">
+
+
+
+
+<h1>What is a text file and what is a binary file?</h1>
+
+<div class="adsense-wide">
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <!-- perlmaven -->
+  <ins class="adsbygoogle"
+       style="display:inline-block;width:728px;height:90px"
+       data-ad-client="ca-pub-7760157643054954"
+       data-ad-slot="2003827732"></ins>
+  <script>
+  (adsbygoogle = window.adsbygoogle || []).push({});
+  </script>
+</div>
+
+
+
+  <div id="indexes">
+    <ul>
+      
+         <li><button class="btn btn-mini btn-primary kw-button" type="button" value="ASCII">ASCII</button></li>
+      
+         <li><button class="btn btn-mini btn-primary kw-button" type="button" value="UTF-8">UTF-8</button></li>
+      
+         <li><button class="btn btn-mini btn-primary kw-button" type="button" value="Unicode">Unicode</button></li>
+      
+    </ul>
+  </div>
+
+
+<div role="main" id="main">
+<p>
+
+If you are not coming from a programming background it might not yet be clear what is really a file?
+What is a <b>binary file</b> and what makes something a <b>text file</b>?
+<p>
+
+Is a Microsoft Word document a text file or a binary file?
+<p>
+
+Is an spreadsheet a text file or a binary file?
+<p>
+
+Let's try to explain this.
+<p>
+
+<p>
+
+A little disclaimer:
+<p>
+
+There is actually a lot more variation to this, but I'll focus on files of Unix/Linux systems, Windows and Mac.
+Wikipedia has some more to say about <a href="http://en.wikipedia.org/wiki/Text_file">text files</a>
+and <a href="http://en.wikipedia.org/wiki/Binary_files">binary files</a>, so if this article does not 
+to satisfy your curiosity, then please check out those articles.
+<p>
+
+<h2>What is a file?</h2>
+<p>
+
+Basically every file is just a series of bytes one after the other. That is, numbers between 0 and 255.
+In order to facilitate the storage device they are on, a file might be spread out to several areas on
+that device. From our point of view, each file is just a series of bytes.
+In general every file is a <b>binary file</b>, but if the data in it contains only text (letter, numbers
+and other symbols one would use in writing, and if it consists of lines, then we consider it a <b>text file</b>.
+<p>
+
+<h2>What is a text file?</h2>
+<p>
+
+(I am going to simplify here a bit for clarity and for now assume that the files are only use
+<a href="http://en.wikipedia.org/wiki/ASCII">ASCII characters</a>.)
+<p>
+
+When you open a text file with Notepad or some other, simple text editor you will see several lines of text.
+The file on the disk on the other hand isn't broken up to such lines. It is a series of numbers
+one after the other. When you open the file using Notepad, it translates each number to a visual representation.
+For example if it encounters the number 97, it will show the letter <b>a</b>. We can say that the
+<span class="inline_code">a character is represented by the number 97 in ASCII</span>.
+<p>
+
+The reason that you see several lines in your editor is that some of the bytes in the file,
+that are called <b>newlines</b>, are actually instructions to the editor to go to the beginning of next line.
+Thus the character that was in the file after the <b>newline character</b> will be displayed in the next line.
+<p>
+
+<h2>What is a newline?</h2>
+<p>
+
+Which number represents the newline?
+<p>
+
+Actually none of the characters in the <a href="http://en.wikipedia.org/wiki/ASCII">ASCII table</a> is called a <b>newline</b>.
+When we say <b>newline</b> we usually mean <b>the sign that can convince the computer to go to the beginning of next row</b>.
+<p>
+
+There are various sets of bytes that represent a <b>newline</b> depending on the operating system.
+In the operating systems we care about in this article a <b>newline</b> is always represented by a combination
+of two characters that in the ASCII table are called <span class="inline_code">LF - line feed</span> (hexa 0x0A or decimal 10) and
+<span class="inline_code">CR - carriage return</span> (hexa 0x0D or decimal 13).
+<p>
+
+If you have ever seen a <a href="http://en.wikipedia.org/wiki/Typewriter">Typewriter</a>, you will
+remember, in order to go to the next line, the user had to pull a handle towards the beginning of
+the line. (Usually to the left side of the paper.)
+This movement first pushed the "carriage" to the beginning of the paper and when it arrived to the
+beginning (and got stuck), further pulling of the handle turning the paper a bit so the
+carriage would point to the next line. Then the typewrite was ready for the next line.
+<p>
+
+That is, they used two operations
+<b>carriage return</b>, pushing the "carriage" to the beginning of the paper and
+<b>line feed</b> - going to the next line.
+<p>
+
+<img src="/img/Underwoodfive.jpg" alt="typewriter" />
+<p>
+
+(Image from <a href="http://en.wikipedia.org/wiki/Typewriter">Wikipedia</a>)
+<p>
+
+Therefore on MS Windows, a newline is represented by two characters: <span class="inline_code">CRLF</span>.
+A <span class="inline_code">Carriage return</span> followed by a <span class="inline_code">line feed</span>.
+<p>
+
+On Unix/Linux systems and on Mac OSX, the <b>newline</b> is represented by a single
+<span class="inline_code">LF</span> (<span class="inline_code">line feed</span>).
+<p>
+
+Just for curiosity, Mac OS Classic (before OSX),
+Commodore, <a href="http://en.wikipedia.org/wiki/ZX_Spectrum">ZX Spectrum</a>,
+<a href="http://en.wikipedia.org/wiki/TRS-80">TRS-80</a>
+all used a <span class="inline_code">CR</span> (<span class="inline_code">Carriage Return</span>) to represent a <b>newline</b>.
+<p>
+
+(I learned programming on a HT-1080Z which was a TRS-80 clone and later switched
+to a ZX Spectrum.)
+<p>
+
+Wikipedia has even more to say about <a href="http://en.wikipedia.org/wiki/Newline">newline</a>.
+<p>
+
+So if you have a file filled with <a href="http://en.wikipedia.org/wiki/ASCII">ASCII printable characters</a>
+with a few "newlines" sprinkled in, then you have a <b>text file</b>.
+<p>
+
+<h2>Encoding</h2>
+<p>
+
+Of course if you looked at the <a href="http://en.wikipedia.org/wiki/ASCII">ASCII</a> table you saw that
+only very few languages could be written with those letters. Mostly the Latin based languages.
+Many languages that use those characters have a few extra letters.
+For example in <a href="http://en.wikipedia.org/wiki/Hungarian_alphabet">Hungarian</a>
+there are a few more vowels: aáeéiíoóöőuúüű. The 5 from Latin and 9 extra. For fun.)
+You cannot represent then within the ASCII table.
+<p>
+
+Therefore people have invented other <a href="http://en.wikipedia.org/wiki/Encoding">Encodings</a>,
+besides ASCII. Without going into the details, each encoding is a mapping between numbers that
+can be saved in a computer file and "drawings" that should be displayed on the screen.
+<p>
+
+Remember, even in ASCII, you don't have a letter <span class="inline_code">a</span> in a file. You have a decimal number 97
+saved that your computer knows to display as the letter <span class="inline_code">a</span>. The computer will display the
+letter <span class="inline_code">a</span> if it thinks that your file is in <span class="inline_code">ASCII</span> encoding,
+or in any of the ASCII-based or ASCII-compatible encodings,
+such as <a href="http://en.wikipedia.org/wiki/Latin1">Latin1</a>
+or <a href="http://en.wikipedia.org/wiki/UTF-8">UTF8</a>.
+<p>
+
+So in the ancient times people used various encoding to represent their own language,
+but these encodings overlapped. The same number was used to represent difference characters (drawings)
+in the different languages. That did not allow the mixing of these languages in the same
+file and if the application was used the incorrect encoding to display a file, all you got
+was a mix of unintelligible list of characters from some other language.
+<p>
+
+You can still see this problem when a web page is written in one of these ancient-time
+encodings, but the browser uses a different encoding to show it. The solution would be
+to include a hint about the encoding in the HTML page, but at times people forget to do this.
+<p>
+
+The other good solution is to use <a href="http://en.wikipedia.org/wiki/UTF-8">UTF-8</a> encoding
+as this encoding maps out <b>all</b> the characters in the known universe. Unfortunately
+<a href="https://en.wikipedia.org/wiki/Klingon_writing_systems">Klingon</a> is not yet included.
+<p>
+
+<a href="http://en.wikipedia.org/wiki/UTF-8">UTF-8</a> is one of good ways to
+map <a href="https://en.wikipedia.org/wiki/Unicode">Unicode</a> characters to numbers.
+As Unicode currently includes more than 110,000 characters it cannot be represented in one byte
+which can hold only numbers between 0 and 255. So in UTF-8, every character is represented by 1 to 4
+bytes. If you open a file that was written using the UTF-8 encoding, with a tool
+that can only handle ASCII characters, you will see lots of "garbage". That's because in UTF-8
+some of the characters are represented by numbers that are "control characters" in ASCII.
+<p>
+
+So to the casual viewer, the file would be indistinguishable from a <b>binary file</b>.
+<p>
+
+<h2>Binary file</h2>
+<p>
+
+A binary file is basically any file that is not "line-oriented". Any file where besides the
+actual written characters and newlines there are other symbols as well.
+<p>
+
+So a program written in the C programming language is a text file, but after you compiled it, the
+compiled version is binary.
+<p>
+
+A Perl program is a text file, but if you package it with
+<a href="https://metacpan.org/module/PAR::Packer">PAR::Packer</a> it will be a binary file.
+<p>
+
+A Microsoft word file is a binary file as besides the actual text, it also contains various
+characters representing font size and color.
+<p>
+
+An <a href="https://en.wikipedia.org/wiki/OpenOffice">Open Office Write</a> file is binary
+as it is a zipped set of XML files, but the XML files inside are considered text files.
+Even though they contain both text and characters that represent font-size and color.
+<p>
+
+An HTML file, is a text file too, even though it contains lots of characters that are
+invisible when viewed in a browser. It is considered a text file even though a newline,
+as described above, won't cause the next character to be displayed on the next line
+when viewed through a browsers.
+It is considered a text file, because all the "control characters" are themselves
+"printable characters", when viewed in a regular text editor.
+<p>
+
+<p>
+
+<p>
+
+
+</div>
+
+
+
+<div id="creators">
+   
+
+      
+        <img src="/img/szabgab.png"  />
+        <div class="author_text">
+           Written by<br>
+           
+             <a href="https://plus.google.com/102810219707784087582?rel=author">Gabor Szabo</a>
+           
+        </div>
+      
+
+   
+</div>
+
+
+
+
+<div class="adsense-wide">
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <!-- perlmaven_wide_bottom -->
+  <ins class="adsbygoogle"
+       style="display:inline-block;width:728px;height:90px"
+       data-ad-client="ca-pub-7760157643054954"
+       data-ad-slot="6434027334"></ins>
+  <script>
+  (adsbygoogle = window.adsbygoogle || []).push({});
+  </script>
+</div>
+
+
+<h2>Comments</h2>
+
+
+  In the comments, please wrap your code snippets within &lt;pre&gt; &lt;/pre&gt; tags and use spaces for indentation.
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'perl5maven'; // required: replace example with your forum shortname
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+
+
+
+
+
+
+
+
+
+    </div>
+
+    <div class="span3">
+      <div id="right-side">
+        
+         
+
+
+         
+            <a href="https://github.com/szabgab/perlmaven.com/tree/main/sites/en/pages//what-is-a-text-file.txt"><button type="button" class="btn btn-success">Suggest a change</button></a>
+         
+
+            
+               <div id="newsletter-right-form">
+                  <h3><a href="/perl-training-consulting">Training and Consulting</a></h3>
+               </div>
+            
+           <div>
+See also articles about Python and Node.js on <a href="http://code-maven.com/">Code Maven</a>.
+</div>
+
+
+
+           
+
+<div id="social-share">
+<script>reddit_url='http://perlmaven.com/what-is-a-text-file'</script>
+<script>reddit_title='What is a text file and what is a binary file?'</script>
+<script type="text/javascript" src="http://reddit.com/button.js?t=2"></script>
+
+<a href="http://twitter.com/share" class="twitter-share-button"
+data-text="What is a text file and what is a binary file?" data-url="http://perlmaven.com/what-is-a-text-file" data-count="vertical" data-counturl="http://perlmaven.com/what-is-a-text-file" >Tweet</a>
+<script type="text/javascript" src="http://platform.twitter.com/widgets.js">
+</script>
+
+<script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
+<g:plusone size="tall" href="http://perlmaven.com/what-is-a-text-file"></g:plusone>
+
+<div class="fb-like" data-href="http://perlmaven.com/what-is-a-text-file" data-send="false" data-layout="box_count" data-width="450" data-show-faces="false"></div>
+</div>
+
+
+
+
+
+             <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <!-- perlmaven_tall -->
+  <ins class="adsbygoogle"
+       style="display:inline-block;width:300px;height:600px"
+       data-ad-client="ca-pub-7760157643054954"
+       data-ad-slot="4957294134"></ins>
+  <script>
+  (adsbygoogle = window.adsbygoogle || []).push({});
+  </script>
+
+
+           
+             <div id="related_all">
+                 <div id="related">
+                   <b>Related articles</b>
+                   
+                 </div>
+                 <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- perl_maven_related_large -->
+<ins class="adsbygoogle"
+     style="display:inline-block;width:180px;height:90px"
+     data-ad-client="ca-pub-7760157643054954"
+     data-ad-slot="4082978939"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+             </div>
+           
+
+
+         
+      </div>
+    </div><!-- end of right column -->
+  </div>
+</div>
+
+<script src="/javascripts/jquery-1.11.1.min.js"></script>
+<script src="/bootstrap/js/bootstrap-transition.js"></script>
+<script src="/bootstrap/js/bootstrap-alert.js"></script>
+<script src="/bootstrap/js/bootstrap-modal.js"></script>
+<script src="/bootstrap/js/bootstrap-dropdown.js"></script>
+<script src="/bootstrap/js/bootstrap-scrollspy.js"></script>
+<script src="/bootstrap/js/bootstrap-tab.js"></script>
+<script src="/bootstrap/js/bootstrap-tooltip.js"></script>
+<script src="/bootstrap/js/bootstrap-popover.js"></script>
+<script src="/bootstrap/js/bootstrap-button.js"></script>
+<script src="/bootstrap/js/bootstrap-collapse.js"></script>
+<script src="/bootstrap/js/bootstrap-carousel.js"></script>
+<script src="/bootstrap/js/bootstrap-typeahead.js"></script>
+
+<script src="/javascripts/perlmaven.js?9"></script>
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-12199211-9', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+
+
+
+
+
+<script type="text/javascript">
+  var infolink_pid = 2353544;
+  var infolink_wsid = 0; 
+</script>
+<script type="text/javascript" src="http://resources.infolinks.com/js/infolinks_main.js"></script>
+
+</body>
+</html>
+
+
+
