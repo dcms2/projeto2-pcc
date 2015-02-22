@@ -72,23 +72,37 @@ inline void read_index(const string& indexname,
   }
 }
 
-inline void search(const std::vector<string>& indexes,
-                   const std::vector<string>& patterns,
-                   const bool only_occ) {
+inline void search_number_occ(const std::vector<string>& indexes,
+                              const std::vector<string>& patterns) {
 
   for (int i = 0; i < indexes.size(); ++i) {
     string text;
     vector<int> pos, Llcp, Rlcp;
     read_index(indexes[i], text, pos, Llcp, Rlcp);
     SuffixArray suffix_array = SuffixArray(text, pos, Llcp, Rlcp);
+    std::cout << "File: " << indexes[i] << std::endl;
     for (int j = 0; j < patterns.size(); ++j) {
       char* pattern = new char[patterns[j].size()+1];
       strcpy(pattern, patterns[j].c_str());
       pair<int,int> par = suffix_array.findPattern(pattern);
       int x = par.second - par.first + 1;
-      std::cerr << "found " << patterns[j] << " in " << indexes[i] << " " << x << " times" << std::endl;
+      if (x != 1) std::cerr << "    found " << patterns[j] << " " << x << " times" << std::endl;
+      else std::cerr << "    found " << patterns[j] << " 1 time" << std::endl;
+      delete pattern;
     }
   }
+}
+
+inline void search_print_lines(const std::vector<string>& indexes,
+                               const std::vector<string>& patterns) {
+
+  std::cerr << "@TODO" << std::endl;
+}
+
+inline bool is_index_file(const string& s) {
+  if (s.size() < 4) return false;
+  int sz = s.size();
+  return s[sz-1] == 'x' && s[sz-2] == 'd' && s[sz-3] == 'i' && s[sz-4] == '.';
 }
 
 int main(int argc, char **argv) {
@@ -170,7 +184,11 @@ int main(int argc, char **argv) {
     glob(argv[optind], GLOB_NOSORT|GLOB_MARK, NULL, vector_ptr);
 
     for (int i = 0; i < vector_ptr->gl_pathc; i++) {
-      filenames.push_back(vector_ptr->gl_pathv[i]);
+      if (!is_index_file(vector_ptr->gl_pathv[i])) {
+        std::cerr << string(vector_ptr->gl_pathv[i]) << " doesn't have a .idx extension, it won't be used to search for patterns." << std::endl;
+      } else {
+        filenames.push_back(vector_ptr->gl_pathv[i]);
+      }
     }
 
     ++optind;
@@ -179,7 +197,8 @@ int main(int argc, char **argv) {
   delete vector_ptr;
 
   if (search_mode) {
-    search(filenames, patterns, has_count);
+    if (has_count) search_number_occ(filenames, patterns);
+    else search_print_lines(filenames, patterns);
   } else {
     make_index(filenames);
   }

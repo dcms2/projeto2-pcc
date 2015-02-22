@@ -80,11 +80,8 @@ namespace LZW {
       } else if (code_word == size) {
         aux = prev + prev[0];
       } else {
-        cerr << "i: " << i << endl;
-        cerr << "chars: " << int(text[i]) << " " << int(text[i^1]) << endl;
-        cerr << "code_word: " << code_word << endl;
-        cerr << "size: " << size << endl;
-        assert(false);
+        std::cerr << "some of the files are not proper index files. Please check." << std::endl;
+        return "";
       }
 
       dictionary[size] = prev + aux[0];
