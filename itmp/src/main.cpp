@@ -19,7 +19,7 @@ inline string make_filename(string name, const string& ext) {
   if (pos == string::npos) {
     name += ext;
   } else {
-    while (name.size() > pos) name.pop_back();
+    name.resize(pos);
     name += ext;
   }
   return std::move(name);
@@ -75,24 +75,34 @@ inline void read_index(const string& indexname,
 char buffer[1000005], buffer2[1000005];
 
 inline void search_number_occ(const std::vector<string>& indexes,
-                              const std::vector<string>& patterns) {
+                              const std::vector<string>& patterns,
+                              const bool together) {
 
   for (int i = 0; i < indexes.size(); ++i) {
     string text;
     vector<int> pos, Llcp, Rlcp;
     read_index(indexes[i], text, pos, Llcp, Rlcp);
     SuffixArray suffix_array = SuffixArray(text, pos, Llcp, Rlcp);
-    printf("Files: %s\n", indexes[i].c_str());
+    if (!together) {
+      printf("File: %s\n", indexes[i].c_str());
+    }
+    long long total = 0;
     for (int j = 0; j < patterns.size(); ++j) {
       char* pattern;
-      if (patterns[j].size()+1 >= 1000005) pattern = new char[patterns[j].size()+1];
+      if (patterns[j].size()+1 > 1000000) pattern = new char[patterns[j].size()+1];
       else pattern = buffer;
       strcpy(pattern, patterns[j].c_str());
       pair<int,int> par = suffix_array.findPattern(pattern);
       int x = par.second - par.first + 1;
-      if (x != 1) printf("   found %s %d times\n", pattern, x);
-      else printf("   found %s 1 time\n", pattern);
-      if (patterns[j].size()+1 >= 1000005) delete pattern;
+      total += x;
+      if (!together) {
+        if (x != 1) printf("   found %s %d times\n", pattern, x);
+        else printf("   found %s 1 time\n", pattern);
+      }
+      if (patterns[j].size()+1 > 100000) delete pattern;
+    }
+    if (together) {
+      printf("%s:%lld\n", indexes[i].c_str(), total);
     }
   }
 }
@@ -130,20 +140,21 @@ inline void search_print_lines(const std::vector<string>& indexes,
     SuffixArray suffix_array = SuffixArray(text, pos, Llcp, Rlcp);
     for (int j = 0; j < patterns.size(); ++j) {
       char* pattern;
-      if (patterns[j].size()+1 >= 1000005) pattern = new char[patterns[j].size()+1];
+      if (patterns[j].size()+1 > 1000000) pattern = new char[patterns[j].size()+1];
       else pattern = buffer;
       strcpy(pattern, patterns[j].c_str());
       pair<int,int> par = suffix_array.findPattern(pattern);
       vector<int> positions;
       for (int k = par.first; k <= par.second; ++k) {
-        positions.push_back(k);
+        positions.push_back(suffix_array.get_pos()[k]);
       }
       sort(positions.begin(), positions.end());
       for (int k = 0; k < positions.size(); ++k) {
-        printf("%s(%s):", indexes[i].c_str(), pattern);
+        printf("%s:", indexes[i].c_str());
         print_line(text,positions[k],acc_lines);
       }
-      if (patterns[j].size()+1 >= 1000005) delete pattern;
+      puts("");
+      if (patterns[j].size()+1 > 1000000) delete pattern;
     }
   }
 }
@@ -158,19 +169,22 @@ int main(int argc, char **argv) {
   static struct option long_options[] = {
     {"help"   , no_argument      , 0, 'h'},
     {"count"  , no_argument      , 0, 'c'},
+    {"all"    , no_argument      , 0, 'a'},
     {"pattern", required_argument, 0, 'p'},
     {0, 0, 0, 0}
   };
 
   int op;
-  int has_help = 0, has_count = 0, has_pattern_file = 0;
+  int has_help = 0, has_count = 0, has_pattern_file = 0, has_all = 0;
   char* pattern_filename;
 
-  while ((op = getopt_long(argc, argv, "hcp:", long_options, NULL)) != -1) {
+  while ((op = getopt_long(argc, argv, "hcap:", long_options, NULL)) != -1) {
     if (op == 'h') {
       has_help = 1;
     } else if (op == 'c') {
       has_count = 1;
+    } else if (op == 'a') {
+      has_all = 1;
     } else if (op == 'p') {
       pattern_filename = optarg;
       has_pattern_file = 1;
@@ -246,7 +260,7 @@ int main(int argc, char **argv) {
   delete vector_ptr;
 
   if (search_mode) {
-    if (has_count) search_number_occ(filenames, patterns);
+    if (has_count || has_all) search_number_occ(filenames, patterns, has_all);
     else search_print_lines(filenames, patterns);
   } else {
     make_index(filenames);

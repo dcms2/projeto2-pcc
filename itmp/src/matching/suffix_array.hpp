@@ -52,11 +52,11 @@ class SuffixArray {
     }
 
     pair<int,int> findPattern(char* W);
-    char* get_T();
-    int* get_pos();
-    int* get_Llcp();
-    int* get_Rlcp();
-    int get_n();
+    inline char* get_T();
+    inline int* get_pos();
+    inline int* get_Llcp();
+    inline int* get_Rlcp();
+    inline int get_n();
 
  private:
     int* pos;
@@ -83,23 +83,23 @@ pair<int,int> SuffixArray::findPattern(char* W) {
     return make_pair(Lw, Rw);
 }
 
-char* SuffixArray::get_T() {
+inline char* SuffixArray::get_T() {
     return this->T;
 }
 
-int* SuffixArray::get_pos() {
+inline int* SuffixArray::get_pos() {
     return this->pos;
 }
 
-int* SuffixArray::get_Llcp() {
+inline int* SuffixArray::get_Llcp() {
     return this->Llcp;
 }
 
-int* SuffixArray::get_Rlcp() {
+inline int* SuffixArray::get_Rlcp() {
     return this->Rlcp;
 }
 
-int SuffixArray::get_n() {
+inline int SuffixArray::get_n() {
     return this->n;
 }
 

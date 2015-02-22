@@ -14,10 +14,12 @@ Another usage:
   This will search for PATTERN in INDEXFILE 
 
 Example: ./itmp search --pattern=patterns.txt indexfile.idx
-  This will search for every pattern in patterns.txt across indexfile.idx
+  This will search for every pattern in patterns.txt in indexfile.idx
 
 Possible options:
-  -c, --count               print only a count of matching occurences of all patterns per INDEXFILE
+  -c, --count               print how many times each pattern occurred in each INDEXFILE
+
+  -a, --all                 print how many times all patterns occurred in each INDEXFILE
 
   -h, --help                display this help and exit
 

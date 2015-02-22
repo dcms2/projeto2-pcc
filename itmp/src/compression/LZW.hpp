@@ -122,24 +122,24 @@ namespace LZW {
     text = uncompress_text(compressed, last_pos);
     int i = last_pos;
     for (int j = 0; j < text.size()+1; ++j) {
-      int num = compressed[i++];
-      num = (num << 8) | compressed[i++];
-      num = (num << 8) | compressed[i++];
-      num = (num << 8) | compressed[i++];
+      int num = (unsigned char)(compressed[i++]);
+      num = (num << 8) | (unsigned char)(compressed[i++]);
+      num = (num << 8) | (unsigned char)(compressed[i++]);
+      num = (num << 8) | (unsigned char)(compressed[i++]);
       pos.push_back(num);
     }
     for (int j = 0; j < text.size()+1; ++j) {
-      int num = compressed[i++];
-      num = (num << 8) | compressed[i++];
-      num = (num << 8) | compressed[i++];
-      num = (num << 8) | compressed[i++];
+      int num = (unsigned char)(compressed[i++]);
+      num = (num << 8) | (unsigned char)(compressed[i++]);
+      num = (num << 8) | (unsigned char)(compressed[i++]);
+      num = (num << 8) | (unsigned char)(compressed[i++]);
       Llcp.push_back(num);
     }
     for (int j = 0; j < text.size()+1; ++j) {
-      int num = compressed[i++];
-      num = (num << 8) | compressed[i++];
-      num = (num << 8) | compressed[i++];
-      num = (num << 8) | compressed[i++];
+      int num = (unsigned char)(compressed[i++]);
+      num = (num << 8) | (unsigned char)(compressed[i++]);
+      num = (num << 8) | (unsigned char)(compressed[i++]);
+      num = (num << 8) | (unsigned char)(compressed[i++]);
       Rlcp.push_back(num);
     }
   }
