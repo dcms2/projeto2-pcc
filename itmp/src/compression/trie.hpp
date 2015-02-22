@@ -3,13 +3,11 @@
 
 #include <vector>
 
-#include <bits/stdc++.h>
-using namespace std;
-
 class Trie {
  public:
   static const int MAX_SIZE = 1 << 16;
   static const int FLUSH = MAX_SIZE-1;
+  static const int END = MAX_SIZE-2;
 
   Trie() {
     trie.assign(MAX_SIZE + 3, Node()); // +3 due to cache issues

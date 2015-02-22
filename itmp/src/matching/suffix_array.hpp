@@ -2,6 +2,7 @@
 #define SUFFIX_ARRAY_H
 
 #include <bits/stdc++.h>
+
 using namespace std;
 
 /* This is a n * logn implementation strongly based on the original
@@ -11,19 +12,51 @@ but I came out with a way to do it using O(nlogn) memory*/
 
 class SuffixArray {
  public:
-    SuffixArray(char* T, int n) {
-        this->T = new char[n+1];
+    SuffixArray(char* T) {
+        this->n = strlen(T) + 1;
+        this->T = new char[n];
         strcpy(this->T, T);
-        this->T[n] = '$';
-        this->n = n+1;
+        this->T[n] = 1;
         buildSA();
         this->Llcp = new int[this->n];
         this->Rlcp = new int[this->n];
         buildLCP(0, (this->n)-1);
     }
 
-    pair<int,int> findPattern(char* W, int p);
-    int getVal(int i);
+    SuffixArray(const string& T) {
+        this->n = T.size() + 1;
+        this->T = new char[n];
+        strcpy(this->T, T.c_str());
+        this->T[n] = 1;
+        buildSA();
+        this->Llcp = new int[this->n];
+        this->Rlcp = new int[this->n];
+        buildLCP(0, (this->n)-1);   
+    }
+
+    SuffixArray(const string& T,
+                const std::vector<int>& pos,
+                const std::vector<int>& Llcp,
+                const std::vector<int>& Rlcp) {
+        this->n    = T.size() + 1;
+        this->T    = new char[this->n];
+        this->pos  = new int[this->n];
+        this->Llcp = new int[this->n];
+        this->Rlcp = new int[this->n];
+        for (int i = 0; i < this->n; ++i) {
+            this->T[i] = T[i];
+            this->pos[i] = pos[i];
+            this->Llcp[i] = Llcp[i];
+            this->Rlcp[i] = Rlcp[i];
+        }
+    }
+
+    pair<int,int> findPattern(char* W);
+    char* get_T();
+    int* get_pos();
+    int* get_Llcp();
+    int* get_Rlcp();
+    int get_n();
 
  private:
     int* pos;
@@ -43,13 +76,32 @@ class SuffixArray {
     int computeRW(char* W, int p);
 };
 
-pair<int,int> SuffixArray::findPattern(char* W, int p) {
+pair<int,int> SuffixArray::findPattern(char* W) {
+    int p = strlen(W);
     int Lw = computeLW(W, p);
     int Rw = computeRW(W, p);
     return make_pair(Lw, Rw);
 }
 
-int SuffixArray::getVal(int i) { return pos[i]; }
+char* SuffixArray::get_T() {
+    return this->T;
+}
+
+int* SuffixArray::get_pos() {
+    return this->pos;
+}
+
+int* SuffixArray::get_Llcp() {
+    return this->Llcp;
+}
+
+int* SuffixArray::get_Rlcp() {
+    return this->Rlcp;
+}
+
+int SuffixArray::get_n() {
+    return this->n;
+}
 
 int SuffixArray::calcLog() {
     int lg;
