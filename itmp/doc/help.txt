@@ -21,6 +21,8 @@ Possible options:
 
   -a, --all                 print how many times all patterns occurred in each INDEXFILE
 
+  -s, --sorted              print lines in sorted (per pattern) order relative to the text
+
   -h, --help                display this help and exit
 
   -p, --pattern=FILE        obtain PATTERNs from FILE

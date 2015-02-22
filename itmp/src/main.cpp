@@ -124,7 +124,8 @@ inline void print_line(const string& text, int p, const vector<int>& acc_lines) 
 }
 
 inline void search_print_lines(const std::vector<string>& indexes,
-                               const std::vector<string>& patterns) {
+                               const std::vector<string>& patterns,
+                               const bool sorted) {
 
   for (int i = 0; i < indexes.size(); ++i) {
     string text;
@@ -144,16 +145,22 @@ inline void search_print_lines(const std::vector<string>& indexes,
       else pattern = buffer;
       strcpy(pattern, patterns[j].c_str());
       pair<int,int> par = suffix_array.findPattern(pattern);
-      vector<int> positions;
-      for (int k = par.first; k <= par.second; ++k) {
-        positions.push_back(suffix_array.get_pos()[k]);
+      if (sorted) {
+        vector<int> positions;
+        for (int k = par.first; k <= par.second; ++k) {
+          positions.push_back(suffix_array.get_pos()[k]);
+        }
+        sort(positions.begin(), positions.end());
+        for (int k = 0; k < positions.size(); ++k) {
+          printf("%s(%s):", indexes[i].c_str(), pattern);
+          print_line(text,positions[k],acc_lines);
+        }
+      } else {
+        for (int k = par.first; k <= par.second; ++k) {
+          printf("%s(%s):", indexes[i].c_str(), pattern);
+          print_line(text,suffix_array.get_pos()[k],acc_lines); 
+        }
       }
-      sort(positions.begin(), positions.end());
-      for (int k = 0; k < positions.size(); ++k) {
-        printf("%s:", indexes[i].c_str());
-        print_line(text,positions[k],acc_lines);
-      }
-      puts("");
       if (patterns[j].size()+1 > 1000000) delete pattern;
     }
   }
@@ -170,21 +177,24 @@ int main(int argc, char **argv) {
     {"help"   , no_argument      , 0, 'h'},
     {"count"  , no_argument      , 0, 'c'},
     {"all"    , no_argument      , 0, 'a'},
+    {"sort"   , no_argument      , 0, 's'},
     {"pattern", required_argument, 0, 'p'},
     {0, 0, 0, 0}
   };
 
   int op;
-  int has_help = 0, has_count = 0, has_pattern_file = 0, has_all = 0;
+  int has_help = 0, has_count = 0, has_pattern_file = 0, has_all = 0, sorted = 0;
   char* pattern_filename;
 
-  while ((op = getopt_long(argc, argv, "hcap:", long_options, NULL)) != -1) {
+  while ((op = getopt_long(argc, argv, "hcasp:", long_options, NULL)) != -1) {
     if (op == 'h') {
       has_help = 1;
     } else if (op == 'c') {
       has_count = 1;
     } else if (op == 'a') {
       has_all = 1;
+    } else if (op == 's') {
+      sorted = 1;
     } else if (op == 'p') {
       pattern_filename = optarg;
       has_pattern_file = 1;
@@ -261,7 +271,7 @@ int main(int argc, char **argv) {
 
   if (search_mode) {
     if (has_count || has_all) search_number_occ(filenames, patterns, has_all);
-    else search_print_lines(filenames, patterns);
+    else search_print_lines(filenames, patterns, sorted);
   } else {
     make_index(filenames);
   }
